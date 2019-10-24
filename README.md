@@ -1,2 +1,2 @@
-# WEB-
-一个基于Velocity/SpringBoot的前后端分离组件
+# Web-separation-component
+一个基于公司内部框架Bench，以及Velocity/SpringBoot的前后端分离组件
