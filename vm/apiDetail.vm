@@ -1,0 +1,308 @@
+#set($layout="/home/layout/api.vm")
+
+#if($!enabled)
+<div class="wrap">
+    <header>
+        <b>$serviceNameEnum </b>
+        <a href="apiList.htm" class="">返回首页</a>
+    </header>
+    <section>
+        <h4> 请求参数：</h4>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>可否为空</th>
+                <th>参数说明
+                </td>
+            </tr>
+               #foreach($!requestField in $paramList)
+                    <tr>
+                      <td>$!requestField.value</td>
+                      <td>$!requestField.paramType</td>
+                      <td>#if(!$!requestField.empty)否#else是#end</td>
+                      <td>$!requestField.explain
+                           #if($requestField.type.isEnum())
+                                    <br>枚举字段如下：<br>
+                                    #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($requestField.type).entrySet())
+                                        $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                    #end
+                           #end
+                      </td>
+                   </tr>
+              #end
+             #foreach($requestField in $requestFields)
+                #set($fieldAnno=$!fieldUtils.getAnnotation($requestField,"com.bench.common.doc.Doc"))
+                #if($fieldAnno)
+                    #if($requestField.name != "httpRequest")
+                        <tr>
+                            <td>$requestField.name</td>
+                            <td>$classUtils.getShortClassName($requestField.type)</td>
+                            <td>
+                                #if($!fieldUtils.getAnnotation($requestField,"javax.validation.constraints.NotBlank") ||
+                                    $!fieldUtils.getAnnotation($requestField,"javax.validation.constraints.NotEmpty") ||
+                                    $!fieldUtils.getAnnotation($requestField,"javax.validation.constraints.NotNull") )
+                                    否
+                                #else
+                                    是
+                                #end
+                            </td>
+                            <td>$!fieldAnno.value()
+                                #if($requestField.type.isEnum())
+                                    <br>枚举字段如下：<br>
+                                    #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($requestField.type).entrySet())
+                                        $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                    #end
+                                #end
+                            </td>
+                        </tr>
+                    #end
+                #end
+             #end
+        </table>
+    </section>
+    <section>
+        <h4>响应结果：</h4>
+        #macro (showResponseFields $fields)
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>参数名</th>
+                    <th>类型</th>
+                    <th>参数说明</th>
+                </tr>
+                #foreach($!requestField in $resultList)
+                          <tr>
+                             <td>$!requestField.key</td>
+                             <td>$!requestField.dataType.getSimpleName()</td>
+                             <td>$!requestField.explain
+                               #if($requestField.dataType.isEnum())
+                                         <br>枚举字段如下：<br>
+                                   #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($requestField.dataType).entrySet())
+                                     $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                   #end
+                               #end
+                             </td>
+                         </tr>
+                #end
+                #foreach($field in $fields)
+                    #set($docAnno=$!fieldUtils.getAnnotation($field,"com.bench.common.doc.Doc"))
+                    #if($docAnno)
+                        <tr>
+                            <td valign="top">$field.name </td>
+                            <td valign="top">$classUtils.getShortClassName($field.type)</td>
+                            <td>
+                                $!docAnno.value()
+                                #if($field.type.isEnum())
+                                    <br>枚举字段如下：<br>
+                                    #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($field.type).entrySet())
+                                        $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                    #end
+                                #end
+                                #if($arrayUtils.getLength($!docAnno.relations()) > 0)
+                                    <h4 class="in-wrap">内部数据结构说明：</h4>
+                                    $!docAnno.relations()
+                                    #foreach($relationClass in $!docAnno.relations())
+                                        $classUtils.getShortClassName($relationClass)<br>
+                                        #showResponseFields($!fieldUtils.getAllField($!relationClass))
+                                    #end
+                                #end
+                            </td>
+                        </tr>
+                    #end
+                #end
+            </table>
+        #end
+        #showResponseFields($responseFields)
+    </section>
+    <section>
+        <h4>测试</h4>
+        <form id="submitForm">
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>serviceUrl</th>
+                    <th colspan="5">$serviceUrl</th>
+                </tr>
+                 #foreach($!requestField in $paramList)
+                       <tr>
+                             <td>$!requestField.value</td>
+                             <td>$!requestField.paramType</td>
+                             <td>$!requestField.explain
+                                  #if($requestField.type.isEnum())
+                                     <br>枚举字段如下：<br>
+                                       #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($requestField.type).entrySet())
+                                          $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                       #end
+                                  #end
+                             </td>
+                             <td>
+                                <input name="$requestField.value">
+                             </td>
+                       </tr>
+                 #end
+                #foreach($requestField in $requestFields)
+                    #set($fieldAnno = false)
+                    #set($fieldAnno=$!fieldUtils.getAnnotation($requestField,"com.bench.common.doc.Doc"))
+                    #if($fieldAnno)
+                        #if($requestField.name != "httpRequest")
+                            <tr>
+                                <td>$requestField.name</td>
+                                <td>$classUtils.getShortClassName($requestField.type)</td>
+                                <td>
+                                    #if($!fieldUtils.getAnnotation($requestField,
+                                        "javax.validation.constraints.NotBlank") ||
+                                        $!fieldUtils.getAnnotation($requestField,
+                                            "javax.validation.constraints.NotEmpty") ||
+                                        $!fieldUtils.getAnnotation($requestField,
+                                            "javax.validation.constraints.NotNull") )
+                                        否
+                                    #else
+                                        是
+                                    #end
+                                </td>
+                                <td>
+                                    $!fieldAnno.value()
+                                    #if($requestField.type.isEnum())
+                                #end
+                                </td>
+                                <td>
+                                    <input name="$requestField.name">
+                                </td>
+                            </tr>
+                        #end
+                    #end
+                #end
+            </table>
+        </form>
+        #set($nextStepNo=1)
+        <div class="submit-btn">
+            测试第${nextStepNo}步：提交表表单数据 <button onClick="formSubmit()"
+                                              class="submit">提交</button>
+        </div>
+    </section>
+    <section>
+        <h4>关于输出的数据类型</h4>
+        <p>
+            1、日期类型java.lang.Date输出格式为yyyy-mm-dd hh:mm:ss格式<br>
+            2、boolean类型输出为true/false<br>
+        </p>
+        #macro (showResponseFields $fields)
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>参数名</th>
+                    <th>类型</th>
+                    <th>参数说明</th>
+                </tr>
+                #foreach($field in $fields)
+                    #set($docAnno = false)
+                    #set($docAnno=$!fieldUtils.getAnnotation($field,"com.bench.common.doc.Doc"))
+                    #if($docAnno)
+                        <tr>
+                            <td>$field.name </td>
+                            <td>$classUtils.getShortClassName($field.type)</td>
+                            <td>
+                                $!docAnno.value()
+                                #if($field.type.isEnum())
+                                    <br>枚举字段如下：<br>
+                                    #foreach($enumEntry in $enumBaseUtils.getNameEnumBaseMap($field.type).entrySet())
+                                        $enumEntry.key =&gt; $enumEntry.value.message() <br>
+                                    #end
+                                #end
+                                #if($arrayUtils.getLength($!docAnno.relations()) > 0)
+                                    <h4 class="in-wrap">内部数据结构说明：</h4>
+                                    #foreach($relationClass in $!docAnno.relations())
+                                        $classUtils.getShortClassName($relationClass)<br>
+                                        #showResponseFields($!fieldUtils.getAllField($!relationClass))
+                                    #end
+
+                                #end
+                            </td>
+                        </tr>
+                    #end
+                #end
+            </table>
+        #end
+    </section>
+</div>
+<script type='text/javascript'>
+    function formSubmit() {
+        if(!/get|GET/.test('$requestMethod')) {
+            var form = document.getElementById('submitForm');
+            form.action = '$serviceUrl?';
+            form.method = "post";
+            form.target = "_blank";
+            form.submit();
+            return;
+        }
+        window.open('$serviceUrl?'+ serializeForm('submitForm'))
+    }
+
+    //获取指定form中的所有的<input>对象
+    function getElements(formId) {
+        var form = document.getElementById(formId);
+        var elements = new Array();
+        var tagElements = form.getElementsByTagName('input');
+        for (var j = 0; j < tagElements.length; j++){
+            elements.push(tagElements[j]);
+
+        }
+        return elements;
+    }
+
+    //获取单个input中的【name,value】数组
+    function inputSelector(element) {
+        if (element.checked)
+            return [element.name, element.value];
+    }
+
+    function input(element) {
+        switch (element.type.toLowerCase()) {
+            case 'submit':
+            case 'hidden':
+            case 'password':
+            case 'text':
+                return [element.name, element.value];
+            case 'checkbox':
+            case 'radio':
+                return inputSelector(element);
+        }
+        return false;
+    }
+
+    //组合URL
+    function serializeElement(element) {
+        var method = element.tagName.toLowerCase();
+        var parameter = input(element);
+
+        if (parameter) {
+            var key = encodeURIComponent(parameter[0]);
+            if (key.length == 0) return;
+
+            if (parameter[1].constructor != Array)
+                parameter[1] = [parameter[1]];
+
+            var values = parameter[1];
+            var results = [];
+            for (var i=0; i<values.length; i++) {
+                results.push(key + '=' + encodeURIComponent(values[i]));
+            }
+            return results.join('&');
+        }
+    }
+
+    //调用方法
+    function serializeForm(formId) {
+        var elements = getElements(formId);
+        var queryComponents = new Array();
+
+        for (var i = 0; i < elements.length; i++) {
+            var queryComponent = serializeElement(elements[i]);
+            if (queryComponent)
+                queryComponents.push(queryComponent);
+        }
+
+        return queryComponents.join('&');
+    }
+</script>
+#else
+无权限访问
+#end

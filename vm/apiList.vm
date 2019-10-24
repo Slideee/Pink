@@ -1,0 +1,40 @@
+#set($layout="/home/layout/api.vm")
+
+#if($!enabled)
+<div class="wrap">
+    #foreach($sortEntry in $sortMap.entrySet())
+        <section>
+            <h4>$!projectMap.get($sortEntry.key)</h4>
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>类名</th>
+                    <th>地址</th>
+                    <th>描述</th>
+                    <th>方法</th>
+                    <th>详情</th>
+                </tr>
+                #foreach($entry in $sortEntry.value)
+                    <tr>
+                        <td>$entry.key</td>
+                        <td>#if(!$stringUtils.equals($sortEntry.key,"HOME"))
+                            /$stringUtils.toLowerCase($sortEntry.key)#end$entry.value</td>
+                        <td>$entry.explain</td>
+                        <td>$entry.requestMethod</td>
+                        #if($entry.requestMethod.size()==1)
+                            <td>
+                                <a href="/apiDetail.htm?serviceName=$entry.service.name()_${entry.key}_${entry.requestMethod.get(0)}&serviceUrl=#if(!$stringUtils.equals($sortEntry.key,
+                                    "HOME"))/$stringUtils.toLowerCase($sortEntry.key)#end$entry.value">详情</a></td>
+                        #else
+                            <td>
+                                <a href="/apiDetail.htm?serviceName=$entry.service.name()_${entry.key}&serviceUrl=#if(!$stringUtils.equals($sortEntry.key,
+                                    "HOME"))/$stringUtils.toLowerCase($sortEntry.key)#end$entry.value">详情</a></td>
+                        #end
+                    </tr>
+                #end
+            </table>
+        </section>
+    #end
+</div>
+#else
+无权限访问
+#end

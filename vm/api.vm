@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="apiList">
+    <meta name="description" content="apiList">
+    <title>apiList</title>
+    <style type="text/css">
+        .wrap {
+            width: 100%;
+            max-width: 1460px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .in-wrap {
+            margin-top: 30px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header a {
+            margin-left: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #E4E4E4;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h4 {
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            text-align: right;
+            padding: 20px 0;
+            border-bottom: 2px solid #999999;
+        }
+
+        input{
+            height: 24px;
+            padding: 6px 10px;
+            font-size: 1rem;
+            line-height: 20px;
+            color: #2e2e2e;
+            border: 1px solid #5d5d5d;
+            border-radius: 0.25rem;
+        }
+
+        .submit{
+            text-align: center;
+            border: 1px solid transparent;
+            padding: 5px 10px;
+            line-height: 20px;
+            color: #fff;
+            background: #12a1eb;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 400;
+            margin-left: 10px;
+            width: 80px;
+            height: 34px;
+        }
+    </style>
+</head>
+<body>
+    $screen_placeholder
+</body>
+</html>
