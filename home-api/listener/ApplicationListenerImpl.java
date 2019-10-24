@@ -1,4 +1,4 @@
-package com.bench.app.ch.user.wap.base.web.home.api.listener;
+﻿package com.bench.app.ch.user.wap.base.web.home.api.listener;
 
 import com.bench.app.ch.user.wap.base.core.model.api.ApiJsonModel;
 import com.bench.app.ch.user.wap.base.core.model.api.ApiJsonParamModel;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
+ * 注解封装实现组件
  *
  * @author Pink
  *
