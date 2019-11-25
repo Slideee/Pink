@@ -1,9 +1,9 @@
-package com.bench.app.ch.user.wap.base.core.model.api;
+﻿package com.bench.app.ch.user.wap.base.core.model.api;
 
 import java.util.List;
 
 /**
- * 
+ * 参数实体
  * 
  * @author Pink
  *
