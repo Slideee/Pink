@@ -1,7 +1,7 @@
-package com.bench.app.ch.user.wap.base.core.model.api;
+﻿package com.bench.app.ch.user.wap.base.core.model.api;
 
 /**
- * 
+ * 传参实体
  * 
  * @author Pink
  *
